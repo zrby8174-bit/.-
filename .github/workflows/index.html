@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام اللجنة العلمية المركزية - جامعة صنعاء</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; }
+        .tab-content { display: none; }
+        .active { display: block; }
+        .admin-section { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="bg-gradient-to-r from-blue-900 to-blue-700 text-white p-8 shadow-xl text-center">
+        <div class="mb-4 text-6xl"><i class="fas fa-university"></i></div>
+        <h1 class="text-4xl font-bold">اللجنة العلمية المركزية</h1>
+        <p class="mt-2 text-blue-200 text-xl">جامعة صنعاء - بوابة الطالب الأكاديمية</p>
+    </header>
+
+    <nav class="bg-white shadow-md sticky top-0 z-50 overflow-x-auto">
+        <div class="container mx-auto flex justify-center py-4 px-2 space-x-6 space-x-reverse whitespace-nowrap">
+            <button onclick="showTab('home')" class="hover:text-blue-700 font-bold transition"><i class="fas fa-home ml-1"></i> الرئيسية</button>
+            <button onclick="showTab('channels')" class="hover:text-blue-700 font-bold transition"><i class="fas fa-bullhorn ml-1"></i> القنوات</button>
+            <button onclick="showTab('bots')" class="hover:text-blue-700 font-bold transition"><i class="fas fa-robot ml-1"></i> البوتات</button>
+            <button onclick="showTab('library')" class="hover:text-blue-700 font-bold transition"><i class="fas fa-book ml-1"></i> المكتبة (PDF)</button>
+            <button onclick="showTab('news')" class="hover:text-blue-700 font-bold transition"><i class="fas fa-newspaper ml-1"></i> الأخبار</button>
+            <button onclick="toggleAdmin()" class="bg-red-600 text-white px-4 py-1 rounded-lg shadow-md hover:bg-red-700 mr-4">لوحة التحكم</button>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        
+        <div id="home" class="tab-content active space-y-6">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border-r-8 border-blue-900">
+                <h2 class="text-2xl font-bold mb-4 text-blue-900">من نحن؟</h2>
+                <p id="about-text" class="text-gray-700 text-lg leading-relaxed"></p>
+            </div>
+            <div class="bg-blue-50 p-8 rounded-2xl border border-blue-100">
+                <h2 class="text-2xl font-bold mb-4 text-blue-900 italic text-center">"العلم يبني بيوتاً لا عماد لها"</h2>
+            </div>
+        </div>
+
+        <div id="channels" class="tab-content">
+            <h2 class="text-3xl font-bold text-center mb-8"><i class="fab fa-telegram ml-2 text-blue-500"></i>قنوات التليجرام</h2>
+            <div id="channels-list" class="grid md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <div id="bots" class="tab-content text-center">
+            <h2 class="text-3xl font-bold mb-8 text-purple-700"><i class="fas fa-robot ml-2"></i>بوتات اللجنة</h2>
+            <div id="bots-list" class="grid md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="library" class="tab-content">
+            <h2 class="text-3xl font-bold text-center mb-8 text-green-700"><i class="fas fa-file-pdf ml-2"></i>المكتبة العلمية (ملازم وملخصات)</h2>
+            <div id="library-list" class="overflow-x-auto bg-white rounded-xl shadow">
+                <table class="w-full text-right border-collapse">
+                    <thead class="bg-green-600 text-white">
+                        <tr>
+                            <th class="p-4">اسم الملزمة</th>
+                            <th class="p-4">القسم/الكلية</th>
+                            <th class="p-4">تحميل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="library-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="news" class="tab-content">
+            <h2 class="text-3xl font-bold mb-8"><i class="fas fa-bell ml-2 text-yellow-500"></i>آخر التحديثات</h2>
+            <div id="news-list" class="space-y-4"></div>
+        </div>
+
+        <div id="admin-panel" class="admin-section bg-slate-900 text-white p-10 rounded-3xl shadow-2xl">
+            <h2 class="text-3xl font-bold mb-8 text-yellow-400 border-b border-yellow-400/30 pb-4 text-center">إدارة النظام المركزية</h2>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <div class="bg-slate-800 p-6 rounded-xl">
+                    <h3 class="font-bold mb-4 text-blue-300">تحديث التعريف (من نحن)</h3>
+                    <textarea id="edit-about" rows="4" class="w-full p-3 text-black rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    <button onclick="saveAbout()" class="w-full bg-blue-600 mt-4 py-2 rounded-lg font-bold hover:bg-blue-500">حفظ التعريف</button>
+                </div>
+
+                <div class="bg-slate-800 p-6 rounded-xl">
+                    <h3 class="font-bold mb-4 text-green-300">إضافة محتوى جديد</h3>
+                    <input id="item-name" type="text" placeholder="الاسم (مثلاً: ملازم مستوى أول)" class="w-full p-2 text-black mb-3 rounded shadow">
+                    <input id="item-link" type="text" placeholder="الرابط (رابط القناة أو ملف Google Drive)" class="w-full p-2 text-black mb-3 rounded shadow">
+                    <input id="item-extra" type="text" placeholder="القسم (مثلاً: هندسة / طب)" class="w-full p-2 text-black mb-3 rounded shadow">
+                    <select id="item-type" class="w-full p-2 text-black mb-4 rounded shadow">
+                        <option value="channel">قناة تليجرام</option>
+                        <option value="bot">بوت تليجرام</option>
+                        <option value="pdf">ملزمة/ملف PDF</option>
+                    </select>
+                    <button onclick="addItem()" class="w-full bg-green-600 py-2 rounded-lg font-bold hover:bg-green-500">نشر المحتوى</button>
+                </div>
+            </div>
+
+            <div class="mt-10 text-center">
+                <button onclick="clearData()" class="bg-red-900/50 text-red-200 px-6 py-2 rounded-lg text-sm border border-red-500/30">مسح كافة البيانات (تصفير)</button>
+                <button onclick="location.reload()" class="block mx-auto mt-4 underline opacity-60">العودة لوجهة الطالب</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // قاعدة البيانات (تخزن في المتصفح)
+        let db = JSON.parse(localStorage.getItem('su_central_db')) || {
+            about: "اللجنة العلمية المركزية بجامعة صنعاء هي الرافد العلمي الأول للطلبة، نسعى لتوفير بيئة تعليمية متكاملة عبر أحدث الوسائل التقنية.",
+            items: [
+                { name: "القناة الرسمية للجامعة", link: "https://t.me", extra: "عام", type: "channel" },
+                { name: "بوت النتائج", link: "https://t.me", extra: "خدمي", type: "bot" }
+            ]
+        };
+
+        function saveData() {
+            localStorage.setItem('su_central_db', JSON.stringify(db));
+            render();
+        }
+
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function toggleAdmin() {
+            let pass = prompt("كلمة مرور المسؤول:");
+            if (pass === "2025") { // كلمة المرور
+                document.getElementById('admin-panel').style.display = 'block';
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('edit-about').value = db.about;
+            } else { alert("عذراً، كلمة المرور خاطئة!"); }
+        }
+
+        function saveAbout() {
+            db.about = document.getElementById('edit-about').value;
+            saveData();
+            alert("تم تحديث نبذة اللجنة!");
+        }
+
+        function addItem() {
+            const name = document.getElementById('item-name').value;
+            const link = document.getElementById('item-link').value;
+            const extra = document.getElementById('item-extra').value;
+            const type = document.getElementById('item-type').value;
+
+            if(name && link) {
+                db.items.push({name, link, extra, type});
+                saveData();
+                alert("تم النشر بنجاح!");
+                // تصفير الحقول
+                document.getElementById('item-name').value = '';
+                document.getElementById('item-link').value = '';
+            }
+        }
+
+        function clearData() {
+            if(confirm("هل أنت متأكد من حذف كل شيء؟")) {
+                localStorage.removeItem('su_central_db');
+                location.reload();
+            }
+        }
+
+        function render() {
+            document.getElementById('about-text').innerText = db.about;
+            const cList = document.getElementById('channels-list');
+            const bList = document.getElementById('bots-list');
+            const lBody = document.getElementById('library-body');
+            
+            cList.innerHTML = ''; bList.innerHTML = ''; lBody.innerHTML = '';
+
+            db.items.forEach(item => {
+                if(item.type === 'channel') {
+                    cList.innerHTML += `<div class="bg-white p-6 rounded-xl shadow-sm border border-blue-100 flex justify-between items-center">
+                        <div><h3 class="font-bold text-lg text-blue-800">${item.name}</h3><p class="text-sm text-gray-500">${item.extra}</p></div>
+                        <a href="${item.link}" target="_blank" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-full font-bold">انضمام</a>
+                    </div>`;
+                } else if(item.type === 'bot') {
+                    bList.innerHTML += `<div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-purple-500 text-center">
+                        <div class="text-3xl mb-2 text-purple-600"><i class="fas fa-robot"></i></div>
+                        <h3 class="font-bold mb-3">${item.name}</h3>
+                        <a href="${item.link}" target="_blank" class="bg-purple-600 text-white px-6 py-2 rounded-lg inline-block">فتح البوت</a>
+                    </div>`;
+                } else if(item.type === 'pdf') {
+                    lBody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-4 font-bold">${item.name}</td>
+                        <td class="p-4 text-gray-600">${item.extra}</td>
+                        <td class="p-4"><a href="${item.link}" target="_blank" class="text-green-600 text-2xl"><i class="fas fa-cloud-download-alt"></i></a></td>
+                    </tr>`;
+                }
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>
